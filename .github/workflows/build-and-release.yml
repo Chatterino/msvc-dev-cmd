@@ -1,17 +1,16 @@
 name: msvc-dev-cmd
 
+permissions:
+  contents: write
+
 on:
   pull_request:
   push:
     branches:
       - main
-      - release/*
-  schedule:
-    - cron: '0 6 * * *'
 
 jobs:
   test:
-    name: default
     runs-on: windows-latest
     steps:
       - name: Check out source code
@@ -57,7 +56,6 @@ jobs:
           cl.exe hello.c
           dumpbin /headers hello.exe
   audit:
-    name: npm audit
     runs-on: ubuntu-latest
     steps:
       - name: Check out source code
@@ -66,7 +64,6 @@ jobs:
       - run: npm audit --audit-level=moderate --production
       - run: npm audit --audit-level=critical
   alias-arch:
-    name: arch aliases
     runs-on: windows-latest
     steps:
       - name: Check out source code
@@ -82,3 +79,36 @@ jobs:
         run: |
           cl.exe hello.c
           hello.exe
+  create-release:
+    needs: [test, audit, alias-arch]
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Format changes
+        id: format-changes
+        run: |
+          delimiter=$(openssl rand -hex 32)
+          {
+            echo "changelog<<$delimiter"
+            python3 ./.CI/format-recent-changes.py
+            echo $delimiter
+          } >> "$GITHUB_OUTPUT"
+        shell: bash
+      - name: Create release
+        uses: ncipollo/release-action@v1.21.0
+        with:
+          allowUpdates: true
+          body: ${{ steps.format-changes.outputs.changelog }}
+          prerelease: true
+          name: Nightly Release
+          tag: nightly-release
+      - name: Update nightly-release tag
+        run: |
+          git tag -f nightly-release
+          git push -f origin nightly-release
+        shell: bash
