@@ -1,8 +1,6 @@
-const core = require('@actions/core')
-const child_process = require('child_process')
-const fs = require('fs')
-const path = require('path')
-const process = require('process')
+import * as core from '@actions/core';
+import { execSync } from'node:child_process';
+import { existsSync } from 'node:fs';
 
 const PROGRAM_FILES_X86 = process.env['ProgramFiles(x86)']
 const PROGRAM_FILES = [process.env['ProgramFiles(x86)'], process.env['ProgramFiles']]
@@ -19,7 +17,7 @@ const VsYearVersion = {
     '2013': '12.0',
 }
 
-function vsversion_to_versionnumber(vsversion) {
+export function vsversion_to_versionnumber(vsversion) {
     if (Object.values(VsYearVersion).includes(vsversion)) {
         return vsversion
     } else {
@@ -29,9 +27,8 @@ function vsversion_to_versionnumber(vsversion) {
     }
     return vsversion
 }
-exports.vsversion_to_versionnumber = vsversion_to_versionnumber
 
-function vsversion_to_year(vsversion) {
+export function vsversion_to_year(vsversion) {
     if (Object.keys(VsYearVersion).includes(vsversion)) {
         return vsversion
     } else {
@@ -43,22 +40,20 @@ function vsversion_to_year(vsversion) {
     }
     return vsversion
 }
-exports.vsversion_to_year = vsversion_to_year
 
 const VSWHERE_PATH = `${PROGRAM_FILES_X86}\\Microsoft Visual Studio\\Installer`
 
-function findWithVswhere(pattern, version_pattern) {
+export function findWithVswhere(pattern, version_pattern) {
     try {
-        let installationPath = child_process.execSync(`vswhere -products * ${version_pattern} -prerelease -property installationPath`).toString().trim()
+        let installationPath = execSync(`vswhere -products * ${version_pattern} -prerelease -property installationPath`).toString().trim()
         return installationPath + '\\' + pattern
     } catch (e) {
         core.warning(`vswhere failed: ${e}`)
     }
     return null
 }
-exports.findWithVswhere = findWithVswhere
 
-function findVcvarsall(vsversion) {
+export function findVcvarsall(vsversion) {
     const vsversion_number = vsversion_to_versionnumber(vsversion)
     let version_pattern
     if (vsversion_number) {
@@ -70,7 +65,7 @@ function findVcvarsall(vsversion) {
 
     // If vswhere is available, ask it about the location of the latest Visual Studio.
     let path = findWithVswhere('VC\\Auxiliary\\Build\\vcvarsall.bat', version_pattern)
-    if (path && fs.existsSync(path)) {
+    if (path && existsSync(path)) {
         core.info(`Found with vswhere: ${path}`)
         return path
     }
@@ -84,7 +79,7 @@ function findVcvarsall(vsversion) {
             for (const ed of EDITIONS) {
                 path = `${prog_files}\\Microsoft Visual Studio\\${ver}\\${ed}\\VC\\Auxiliary\\Build\\vcvarsall.bat`
                 core.info(`Trying standard location: ${path}`)
-                if (fs.existsSync(path)) {
+                if (existsSync(path)) {
                     core.info(`Found standard location: ${path}`)
                     return path
                 }
@@ -95,7 +90,7 @@ function findVcvarsall(vsversion) {
 
     // Special case for Visual Studio 2015 (and maybe earlier), try it out too.
     path = `${PROGRAM_FILES_X86}\\Microsoft Visual C++ Build Tools\\vcbuildtools.bat`
-    if (fs.existsSync(path)) {
+    if (existsSync(path)) {
         core.info(`Found VS 2015: ${path}`)
         return path
     }
@@ -103,7 +98,6 @@ function findVcvarsall(vsversion) {
 
     throw new Error('Microsoft Visual Studio not found')
 }
-exports.findVcvarsall = findVcvarsall
 
 function isPathVariable(name) {
     const pathLikeVariables = ['PATH', 'INCLUDE', 'LIB', 'LIBPATH']
@@ -121,7 +115,7 @@ function filterPathValue(path) {
 }
 
 /** See https://github.com/ilammy/msvc-dev-cmd#inputs */
-function setupMSVCDevCmd(arch, sdk, toolset, uwp, spectre, vsversion) {
+export function setupMSVCDevCmd(arch, sdk, toolset, uwp, spectre, vsversion) {
     if (process.platform != 'win32') {
         core.info('This is not a Windows virtual environment, bye!')
         return
@@ -163,7 +157,7 @@ function setupMSVCDevCmd(arch, sdk, toolset, uwp, spectre, vsversion) {
     const vcvars = `"${findVcvarsall(vsversion)}" ${args.join(' ')}`
     core.debug(`vcvars command-line: ${vcvars}`)
 
-    const cmd_output_string = child_process.execSync(`set && cls && ${vcvars} && cls && set`, {shell: "cmd"}).toString()
+    const cmd_output_string = execSync(`set && cls && ${vcvars} && cls && set`, {shell: "cmd"}).toString()
     const cmd_output_parts = cmd_output_string.split('\f')
 
     const old_environment = cmd_output_parts[0].split('\r\n')
@@ -222,4 +216,3 @@ function setupMSVCDevCmd(arch, sdk, toolset, uwp, spectre, vsversion) {
 
     core.info(`Configured Developer Command Prompt`)
 }
-exports.setupMSVCDevCmd = setupMSVCDevCmd
