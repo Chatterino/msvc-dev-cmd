@@ -30,6 +30,6 @@
     "@actions/core": "^1.10.0"
   },
   "devDependencies": {
-    "eslint": "^7"
+    "eslint": "^10"
   }
 }
