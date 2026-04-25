@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { execSync } from'node:child_process';
 import { existsSync } from 'node:fs';
+import { delimiter as pathDelimiter } from 'node:path';
 
 const PROGRAM_FILES_X86 = process.env['ProgramFiles(x86)']
 const PROGRAM_FILES = [process.env['ProgramFiles(x86)'], process.env['ProgramFiles']]
@@ -122,7 +123,7 @@ export function setupMSVCDevCmd(arch, sdk, toolset, uwp, spectre, vsversion) {
     }
 
     // Add standard location of "vswhere" to PATH, in case it's not there.
-    process.env.PATH += path.delimiter + VSWHERE_PATH
+    process.env.PATH += pathDelimiter + VSWHERE_PATH
 
     // There are all sorts of way the architectures are called. In addition to
     // values supported by Microsoft Visual C++, recognize some common aliases.
