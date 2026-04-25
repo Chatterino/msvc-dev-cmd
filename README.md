@@ -1,4 +1,4 @@
-<a href="https://github.com/ilammy/msvc-dev-cmd"><img alt="GitHub Actions status" src="https://github.com/ilammy/msvc-dev-cmd/workflows/msvc-dev-cmd/badge.svg"></a>
+<a href="https://github.com/Wissididom/msvc-dev-cmd"><img alt="GitHub Actions status" src="https://github.com/Wissididom/msvc-dev-cmd/workflows/msvc-dev-cmd/badge.svg"></a>
 
 # msvc-dev-cmd
 
@@ -16,8 +16,8 @@ Basic usage for default compilation settings is like this:
 jobs:
   test:
     steps:
-      - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: actions/checkout@v6
+      - uses: Wissididom/msvc-dev-cmd@v2
       - name: Build something requiring CL.EXE
         run: |
           cmake -G "NMake Makefiles" .
@@ -41,8 +41,8 @@ jobs:
           - amd64_x86
           - amd64_arm64
     steps:
-      - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
+      - uses: actions/checkout@v6
+      - uses: Wissididom/msvc-dev-cmd@v2
         with:
           arch: ${{ matrix.arch }}
       - name: Build something requiring CL.EXE
@@ -70,7 +70,7 @@ jobs:
   - `14.XX.YYYYY` for a specific full version number (e.g, `14.11.25503`)
 - `uwp` – set `true` to build for Universal Windows Platform (i.e., for Windows Store)
 - `spectre` – set `true` to use Visual Studio libraries with [Spectre](https://meltdownattack.com) mitigations
-- `vsversion` – the Visual Studio version to use. This can be the version number (e.g. 16.0 for 2019) or the year (e.g. "2019"); omit this input to select the latest version of Visual Studio. On [GitHub-hosted runners](https://docs.github.com/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners), this input is not required because there is only one Visual Studio in the environment.
+- `vsversion` – the Visual Studio version to use. This can be the version number (e.g. 17.0 for 2022) or the year (e.g. "2022"); omit this input to select the latest version of Visual Studio. On [GitHub-hosted runners](https://docs.github.com/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners), this input is not required because there is only one Visual Studio in the environment.
 
 ## Caveats
 
@@ -100,21 +100,21 @@ jobs:
     steps:
       # ...
       - name: Configure build for amd64
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@v2
         with:
           arch: amd64
 
       - run: build # (for amd64)
 
       - name: Configure build for x86
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@v2
         with:
           arch: amd64_x86
 
       - run: build # (for x86)
 
       - name: Configure build for ARM64
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@v2
         with:
           arch: amd64_arm64
 
