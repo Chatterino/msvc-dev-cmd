@@ -7,7 +7,7 @@ on:
   pull_request:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   test:
@@ -83,7 +83,7 @@ jobs:
   create-release:
     needs: [test, audit, alias-arch]
     runs-on: ubuntu-latest
-    #if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    #if: (github.event_name == 'push' && github.ref == 'refs/heads/master')
     steps:
       - uses: actions/checkout@v6
         with:

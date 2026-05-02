@@ -1,4 +1,4 @@
-<a href="https://github.com/Wissididom/msvc-dev-cmd"><img alt="GitHub Actions status" src="https://github.com/Wissididom/msvc-dev-cmd/workflows/msvc-dev-cmd/badge.svg"></a>
+<a href="https://github.com/Chatterino/msvc-dev-cmd"><img alt="GitHub Actions status" src="https://github.com/Chatterino/msvc-dev-cmd/workflows/msvc-dev-cmd/badge.svg"></a>
 
 # msvc-dev-cmd
 
@@ -17,7 +17,7 @@ jobs:
   test:
     steps:
       - uses: actions/checkout@v6
-      - uses: Wissididom/msvc-dev-cmd@v2
+      - uses: Chatterino/msvc-dev-cmd@v2
       - name: Build something requiring CL.EXE
         run: |
           cmake -G "NMake Makefiles" .
@@ -42,7 +42,7 @@ jobs:
           - amd64_arm64
     steps:
       - uses: actions/checkout@v6
-      - uses: Wissididom/msvc-dev-cmd@v2
+      - uses: Chatterino/msvc-dev-cmd@v2
         with:
           arch: ${{ matrix.arch }}
       - name: Build something requiring CL.EXE
