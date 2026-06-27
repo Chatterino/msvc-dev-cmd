@@ -100,21 +100,21 @@ jobs:
     steps:
       # ...
       - name: Configure build for amd64
-        uses: ilammy/msvc-dev-cmd@v2
+        uses: Chatterino/msvc-dev-cmd@v2
         with:
           arch: amd64
 
       - run: build # (for amd64)
 
       - name: Configure build for x86
-        uses: ilammy/msvc-dev-cmd@v2
+        uses: Chatterino/msvc-dev-cmd@v2
         with:
           arch: amd64_x86
 
       - run: build # (for x86)
 
       - name: Configure build for ARM64
-        uses: ilammy/msvc-dev-cmd@v2
+        uses: Chatterino/msvc-dev-cmd@v2
         with:
           arch: amd64_arm64
 
