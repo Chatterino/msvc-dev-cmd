@@ -275,16 +275,12 @@ function Initialize-MSVCDevCmd {
 				$value = Get-FilteredPathValue $value
 			}
 			Set-Item -Path "Env:$name" -Value $value
+			Write-Host "$name=$value" # For testing
 			Add-Content -Path $env:GITHUB_ENV -Value "$name=$value" -Encoding utf8
 		}
 	}
 	Write-Host "::endgroup::"
 	Write-Host "Configured Developer Command Prompt"
-	# For testing
-	Write-Host "Exported compiler variables:"
-	Write-Host "VCToolsInstallDir=$env:VCToolsInstallDir"
-	Write-Host "PATH contains cl.exe:"
-	where.exe cl.exe
 }
 
 Export-ModuleMember -Function `
