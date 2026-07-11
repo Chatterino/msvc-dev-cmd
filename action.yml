@@ -20,6 +20,13 @@ runs:
     - name: Run script
       run: ./index.ps1
       shell: pwsh
+      env:
+        INPUT_ARCH: ${{ inputs.arch }}
+        INPUT_SDK: ${{ inputs.sdk }}
+        INPUT_SPECTRE: ${{ inputs.spectre }}
+        INPUT_TOOLSET: ${{ inputs.toolset }}
+        INPUT_UWP: ${{ inputs.uwp }}
+        INPUT_VSVERSION: ${{ inputs.vsversion }}
 branding:
   icon: terminal
   color: purple
