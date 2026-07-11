@@ -18,7 +18,7 @@ runs:
   using: composite
   steps:
     - name: Run script
-      run: ./index.sh
+      run: ./index.ps1
       shell: pwsh
       env:
         INPUT_ARCH: ${{ inputs.arch }}
