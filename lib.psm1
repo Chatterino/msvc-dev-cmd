@@ -274,8 +274,7 @@ function Initialize-MSVCDevCmd {
 			{
 				$value = Get-FilteredPathValue $value
 			}
-			Set-Item -Path "Env:$name" -Value $value | Out-Null
-			Write-Host "$name=$value" # For testing
+			Set-Item -Path "Env:$name" -Value $value
 			Add-Content -Path $env:GITHUB_ENV -Value "$name=$value" -Encoding utf8
 		}
 	}
