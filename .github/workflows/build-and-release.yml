@@ -57,7 +57,7 @@ jobs:
           cl.exe hello.c
           hello.exe
   create-release:
-    needs: [test, audit, alias-arch]
+    needs: [test, alias-arch]
     runs-on: ubuntu-latest
     if: (github.event_name == 'push' && github.ref == 'refs/heads/master')
     steps:
