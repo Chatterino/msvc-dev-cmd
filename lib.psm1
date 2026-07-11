@@ -262,3 +262,10 @@ function Setup-MSVCDevCmd {
 	Write-Host "::endgroup"
 	Write-Host "Configured Developer Command Prompt"
 }
+
+Export-ModuleMember -Function `
+    Convert-VSVersionToVersionNumber,
+    Convert-VSVersionToYear,
+    Find-WithVsWhere,
+    Find-VcVarsAll,
+    Setup-MSVCDevCmd
