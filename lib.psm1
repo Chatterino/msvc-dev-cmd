@@ -172,7 +172,7 @@ function Get-FilteredPathValue {
 }
 
 # See https://github.com/Chatterino/msvc-dev-cmd#inputs
-function Setup-MSVCDevCmd {
+function Initialize-MSVCDevCmd {
 	param(
 		[string]$Arch,
 		[string]$Sdk,
@@ -287,4 +287,4 @@ Export-ModuleMember -Function `
     Convert-VsVersionToYear,
     Find-WithVsWhere,
     Find-VcVarsAll,
-    Setup-MSVCDevCmd
+    Initialize-MSVCDevCmd

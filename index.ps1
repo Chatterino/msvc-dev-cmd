@@ -25,7 +25,7 @@ function Invoke-Main {
     $vsversion = $env:INPUT_VSVERSION
 
     # Invoke the setup function with the read inputs
-    Setup-MSVCDevCmd `
+    Initialize-MSVCDevCmd `
         -Arch      $arch `
         -Sdk       $sdk `
         -Toolset   $toolset `
