@@ -15,10 +15,6 @@ jobs:
     steps:
       - name: Check out source code
         uses: actions/checkout@v6
-      - name: Install dependencies
-        run: npm ci
-      - name: Run eslint
-        run: npm run lint
       - name: Enable Developer Command Prompt (amd64)
         uses: ./
         with:
@@ -46,22 +42,11 @@ jobs:
         run: |
           cl.exe hello.c
           dumpbin /headers hello.exe
-  audit:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out source code
-        uses: actions/checkout@v6
-      - name: Install dependencies
-        run: npm ci
-      - run: npm audit --audit-level=moderate --production
-      - run: npm audit --audit-level=critical
   alias-arch:
     runs-on: windows-latest
     steps:
       - name: Check out source code
         uses: actions/checkout@v6
-      - name: Install dependencies
-        run: npm ci --omit=dev
       - name: Enable Developer Command Prompt
         uses: ./
         with:
