@@ -224,7 +224,7 @@ function Initialize-MSVCDevCmd {
 	$vcVars = '"' + (Find-VcVarsAll $VSVersion) + '" ' + ($args -join ' ')
 	Write-Host "::debug::vcvars command-line: $vcVars"
 	$cmd = "set && cls && $vcVars && cls && set"
-	$output = cmd.exe /c $cmd
+	$output = (cmd.exe /c $cmd) -join "`r`n"
 	$parts = $output -split "`f"
 	$oldEnv = @{}
 	# Convert old environment lines into a dictionary for easier lookup.
