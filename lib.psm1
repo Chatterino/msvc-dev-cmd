@@ -1,21 +1,21 @@
 $ProgramFilesX86 = ${env:ProgramFiles(x86)}
-$ProgramFilesList = @{
-	${env:ProgramFiles(x86)},
+$ProgramFilesList = @(
+	${env:ProgramFiles(x86)}
 	$env:ProgramFiles
-}
-$Editions = @{
+)
+$Editions = @(
 	"Enterprise",
 	"Professional",
 	"Community",
 	"BuildTools"
-}
-$Years = @{
+)
+$Years = @(
 	"2026",
 	"2022",
 	"2019",
 	"2017"
-}
-@VsYearVersion = @{
+)
+$VsYearVersion = @{
 	"2026" = "18.0"
     "2022" = "17.0"
     "2019" = "16.0"
@@ -26,11 +26,11 @@ $Years = @{
 
 $VsWherePath = Join-Path $ProgramFilesX86 "Microsoft Visual Studio\Installer"
 
-function Convert-VSVersionToVersionNumber {
+function Convert-VsVersionToVersionNumber {
 	param([string]$VsVersion)
 	if ($VsYearVersion.Values -contains $VsVersion)
 	{
-		return $VSVersion
+		return $VsVersion
 	}
 	if ($VsYearVersion.ContainsKey($VsVersion))
 	{
@@ -62,14 +62,34 @@ function Find-WithVsWhere {
 	)
 	try
 	{
-		$installationPath = (& vswhere -products * $VersionPattern.Split(" ") -prerelease -property installationPath).Trim()
+		$arguments = @(
+			"-products"
+			"*"
+		)
+		if ($VersionPattern -eq "-latest")
+		{
+			$arguments += "-latest"
+		}
+		elseif ($VersionPattern -match '^-version\s+"(.+)"$')
+		{
+			$arguments += @(
+				"-version"
+				$Matches[1]
+			)
+		}
+		$arguments += @(
+			"-prerelease"
+			"-property"
+			"installationPath"
+		)
+		$installationPath = (& vswhere @arguments).Trim()
 		if ($installationPath)
 		{
 			return Join-Path $installationPath $Pattern
 		}
 	}
 	catch {
-		Write-Host "::warning vswhere failed: $_"
+		Write-Host "::warning::vswhere failed: $_"
 	}
 	return $null
 }
@@ -187,7 +207,7 @@ function Setup-MSVCDevCmd {
 	$args = @($Arch)
 	if ($Uwp -eq "true")
 	{
-		args += "uwp"
+		$args += "uwp"
 	}
 	if ($Sdk)
 	{
@@ -202,9 +222,9 @@ function Setup-MSVCDevCmd {
 		$args += "-vcvars_spectre_libs=spectre"
 	}
 	$vcVars = '"' + (Find-VcVarsAll $VSVersion) + '" ' + ($args -join ' ')
-	Write-Host "::debug vcvars command-line: $vsVars"
+	Write-Host "::debug::vcvars command-line: $vcVars"
 	$cmd = "set && cls && $vcVars && cls && set"
-	$output = cmd /c $cmd
+	$output = cmd.exe /c $cmd
 	$parts = $output -split "`f"
 	$oldEnv = @{}
 	# Convert old environment lines into a dictionary for easier lookup.
@@ -231,7 +251,7 @@ function Setup-MSVCDevCmd {
 	# Now look at the new environment and export everything that changed.
 	# These are the variables set by vsvars.bat. Also export everything
 	# that was not there during the first sweep: those are new variables.
-	Write-Host "::group Environment variables"
+	Write-Host "::group::Environment variables"
 	foreach ($line in $parts[2] -split "`r?`n")
 	{
 		# vsvars.bat likes to print some fluff at the beginning.
@@ -254,18 +274,17 @@ function Setup-MSVCDevCmd {
 			{
 				$value = Get-FilteredPathValue $value
 			}
-			Set-Item -Path "Env:$name" -Value $value
+			Set-Item Env:$name -Value $value
 			"$name=$value" >> $env:GITHUB_ENV
 		}
-		Write-Host "Configured Developer Command Prompt."
 	}
 	Write-Host "::endgroup"
 	Write-Host "Configured Developer Command Prompt"
 }
 
 Export-ModuleMember -Function `
-    Convert-VSVersionToVersionNumber,
-    Convert-VSVersionToYear,
+    Convert-VsVersionToVersionNumber,
+    Convert-VsVersionToYear,
     Find-WithVsWhere,
     Find-VcVarsAll,
     Setup-MSVCDevCmd
