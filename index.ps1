@@ -7,7 +7,7 @@
     the MSVC Developer Command Prompt with specific architecture,
     SDK version, toolset, UWP, spectre mitigations, and VS version.
 .NOTES
-    Assumes a companion module 'lib.psm1' exposing 'Setup-MSVCDevCmd'.
+    Assumes a companion module 'lib.psm1' exposing 'Initialize-MSVCDevCmd'.
 #>
 
 Import-Module -Name (Join-Path $PSScriptRoot 'lib.psm1') -Force -ErrorAction Stop
@@ -24,7 +24,7 @@ function Invoke-Main {
     $spectre   = $env:INPUT_SPECTRE
     $vsversion = $env:INPUT_VSVERSION
 
-    # Invoke the setup function with the read inputs
+    # Invoke the initialize function with the read inputs
     Initialize-MSVCDevCmd `
         -Arch      $arch `
         -Sdk       $sdk `
