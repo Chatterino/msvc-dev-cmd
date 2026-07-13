@@ -18,7 +18,8 @@ runs:
   using: composite
   steps:
     - name: Run script
-      run: ./index.ps1
+      run: |
+        & "$env:GITHUB_ACTION_PATH/index.ps1"
       shell: pwsh
       env:
         INPUT_ARCH: ${{ inputs.arch }}
