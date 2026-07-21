@@ -19,7 +19,7 @@ runs:
   steps:
     - name: Run script
       run: |
-        & "$env:GITHUB_ACTION_PATH/index.ps1"
+        & "$env:GITHUB_ACTION_PATH/src/index.ps1"
       shell: pwsh
       env:
         INPUT_ARCH: ${{ inputs.arch }}
