@@ -65,7 +65,7 @@ jobs:
         with:
           fetch-depth: 0 # allows for tags access
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Format changes
