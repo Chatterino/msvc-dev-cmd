@@ -56,38 +56,3 @@ jobs:
         run: |
           cl.exe hello.c
           hello.exe
-  create-release:
-    needs: [test, alias-arch]
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/master')
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0 # allows for tags access
-      - name: Setup Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-      - name: Format changes
-        id: format-changes
-        run: |
-          delimiter=$(openssl rand -hex 32)
-          {
-            echo "changelog<<$delimiter"
-            python3 ./.CI/format-recent-changes.py
-            echo $delimiter
-          } >> "$GITHUB_OUTPUT"
-        shell: bash
-      - name: Create release
-        uses: ncipollo/release-action@v1.21.0
-        with:
-          allowUpdates: true
-          body: ${{ steps.format-changes.outputs.changelog }}
-          prerelease: true
-          name: Nightly Release
-          tag: nightly-release
-      - name: Update nightly-release tag
-        run: |
-          git tag -f nightly-release
-          git push -f origin nightly-release
-        shell: bash
