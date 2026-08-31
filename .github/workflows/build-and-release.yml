@@ -22,7 +22,7 @@ jobs:
         with:
           arch: amd64
       - name: Compile and run some C code (amd64)
-        shell: cmd
+        shell: pwsh
         run: |
           cl.exe hello.c
           hello.exe
@@ -31,7 +31,7 @@ jobs:
         with:
           arch: amd64_x86
       - name: Compile and run some C code (x86)
-        shell: cmd
+        shell: pwsh
         run: |
           cl.exe hello.c
           hello.exe
@@ -40,7 +40,7 @@ jobs:
         with:
           arch: amd64_arm64
       - name: Compile some C code (arm64)
-        shell: cmd
+        shell: pwsh
         run: |
           cl.exe hello.c
           dumpbin /headers hello.exe
@@ -56,7 +56,7 @@ jobs:
         with:
           arch: Win32
       - name: Compile and run some C code
-        shell: cmd
+        shell: pwsh
         run: |
           cl.exe hello.c
           hello.exe
